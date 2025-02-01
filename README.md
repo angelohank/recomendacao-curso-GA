@@ -35,3 +35,6 @@ Para executar esse algoritmo, siga os seguintes passos:
 
 1 - clone o repositório <br>
 2 - no terminal digite <br> `python /caminho-do-repositorio-clonado/recomendacao-curso/src/main.py`
+
+#### Exemplo de saída
+![image](https://github.com/user-attachments/assets/720dafe4-29f3-47d7-9d8f-692e111e03ec)
