@@ -6,7 +6,7 @@
 
 ## Funcionamento
 
-Baseado na quantidade de gerações, definida na variável `QT_GERACOES`, o algoritmo:
+Baseado na quantidade de gerações, definida na variável `QT_GERACOES`, o algoritmo: <br>
 **1 - seleciona os melhores indivíduos da população, baseando-se no fitness**
 
 ```O *fitness* é calculado para calcular a qualidade da recomendação passada, da seguinte forma:
