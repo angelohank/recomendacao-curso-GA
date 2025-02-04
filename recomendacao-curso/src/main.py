@@ -63,7 +63,7 @@ def exec_process():
     for geracao in range(QT_GERACOES):
         individuos = seleciona_individuos(populacao)
         filhos = [mutate(crossover(*individuos)) for _ in range(TAMANHO_POPULACAO)]
-        population = individuos + filhos
+        populacao = individuos + filhos
 
     best_recommendation = max(populacao, key=fitness)
     return best_recommendation
@@ -71,8 +71,16 @@ def exec_process():
 recomendacoes = [exec_process() for _ in range(10)]
 cursos_recomendados = {student: course for student, course in recomendacoes}
 
-melhor_recomendacao = exec_process()
-print(f"melhor recomendação: Estudante: {melhor_recomendacao[0]} -> curso: {melhor_recomendacao[1]}")
+qt_execucoes = 100
+soma_acuracia = 0.0
 
-acuracia = calc_acuracia(cursos_recomendados, teste)
-print(f"Acurácia do algoritmo: {acuracia:.2%}")
+for i in range(qt_execucoes):
+    melhor_recomendacao = exec_process()
+    print(f"melhor recomendação: Estudante: {melhor_recomendacao[0]} -> curso: {melhor_recomendacao[1]}")
+
+    acuracia = calc_acuracia(cursos_recomendados, teste)
+
+    soma_acuracia += acuracia
+
+print(f"Acurácia média do algoritmo: {(soma_acuracia/qt_execucoes):.2%}")
+
