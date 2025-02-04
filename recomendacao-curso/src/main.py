@@ -1,14 +1,19 @@
 import pandas as pd
 import random
+from sklearn.model_selection import train_test_split
+
 usuarios_dataset = pd.read_csv('../resources/datasets/users.csv')
 classificacoes_dataset = pd.read_csv('../resources/datasets/ratings.csv')
 
 students = usuarios_dataset['UserID'].unique().tolist()
 courses = classificacoes_dataset['Item'].unique().tolist()
 
+treino, teste = train_test_split(classificacoes_dataset, test_size=0.2, random_state=42)
+
 TAMANHO_POPULACAO = 10
 QT_GERACOES = 50
 TAXA_MUTACAO = 0.1 #TODO esses valores podem ser alterados para serem recebidos dinamicamente na execucao
+
 
 def fitness(recomendacao):
     student, course = recomendacao
@@ -38,6 +43,19 @@ def mutate(recomendacao):
         return (recomendacao[0], random.choice(courses))
     return recomendacao
 
+def calc_acuracia(cursos_recomendados, testes):
+    hits = 0
+    total = 0
+
+    for student in testes['UserID'].unique():
+        real_courses = set(testes[testes['UserID'] == student]['Item'])
+        if student in cursos_recomendados:
+            recommended = {cursos_recomendados[student]}
+            if len(real_courses & recommended) > 0:
+                hits += 1
+        total += 1
+
+    return hits / total if total > 0 else 0
 
 def exec_process():
     populacao = gerar_populacao()
@@ -50,5 +68,11 @@ def exec_process():
     best_recommendation = max(populacao, key=fitness)
     return best_recommendation
 
+recomendacoes = [exec_process() for _ in range(10)]
+cursos_recomendados = {student: course for student, course in recomendacoes}
+
 melhor_recomendacao = exec_process()
 print(f"melhor recomendação: Estudante: {melhor_recomendacao[0]} -> curso: {melhor_recomendacao[1]}")
+
+acuracia = calc_acuracia(cursos_recomendados, teste)
+print(f"Acurácia do algoritmo: {acuracia:.2%}")
