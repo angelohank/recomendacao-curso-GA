@@ -1,6 +1,7 @@
 import pandas as pd
 import random
 from sklearn.model_selection import train_test_split
+from previsao_recomendacao import prever
 
 usuarios_dataset = pd.read_csv('../resources/datasets/users.csv')
 classificacoes_dataset = pd.read_csv('../resources/datasets/ratings.csv')
@@ -13,6 +14,11 @@ treino, teste = train_test_split(classificacoes_dataset, test_size=0.2, random_s
 TAMANHO_POPULACAO = 10
 QT_GERACOES = 50
 TAXA_MUTACAO = 0.1 #TODO esses valores podem ser alterados para serem recebidos dinamicamente na execucao
+
+
+def fitness_with_tensor_flow(recomendacao):
+    estudante, curso = recomendacao
+    return prever(estudante, curso)
 
 
 def fitness(recomendacao):
@@ -29,7 +35,7 @@ def gerar_populacao():
     return [(random.choice(students), random.choice(courses)) for _ in range(TAMANHO_POPULACAO)]
 
 def seleciona_individuos(populacao):
-    populacao_ordenada = sorted(populacao, key=fitness, reverse=True)
+    populacao_ordenada = sorted(populacao, key=fitness_with_tensor_flow, reverse=True)
     return populacao_ordenada[:2]
 
 def crossover(individuo1, individuo2):
@@ -65,7 +71,7 @@ def exec_process():
         filhos = [mutate(crossover(*individuos)) for _ in range(TAMANHO_POPULACAO)]
         populacao = individuos + filhos
 
-    best_recommendation = max(populacao, key=fitness)
+    best_recommendation = max(populacao, key=fitness_with_tensor_flow)
     return best_recommendation
 
 recomendacoes = [exec_process() for _ in range(10)]
